@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "443710452647",
+    "project_id": "vartaa-messenger",
+    "storage_bucket": "vartaa-messenger.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:443710452647:android:cc49d1cd234d7236dabc82",
+        "android_client_info": {
+          "package_name": "tech.developerdhairya.vartaa_messenger"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "443710452647-v4313lv1ql326scdhgchiqjk6rrhqde1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB1Yn2BVO_Wo-kkd9SZHffPUhGbnQ80Ui0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "443710452647-v4313lv1ql326scdhgchiqjk6rrhqde1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
