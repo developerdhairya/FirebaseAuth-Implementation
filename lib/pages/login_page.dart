@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+import 'package:vartaa_messenger/providers/auth_provider.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -12,6 +15,7 @@ class _LoginPageState extends State<LoginPage> {
   late double _deviceHeight;
 
   late GlobalKey<FormState> _formKey;
+  late AuthProvider _authProvider;
 
   late String _email;
   late String _password;
@@ -22,32 +26,45 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+
+    SystemChrome.setPreferredOrientations(
+        [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+
     _deviceHeight = MediaQuery.of(context).size.height;
     _deviceWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
-      body: _loginPageUI(),
+      body: ChangeNotifierProvider<AuthProvider>.value(
+        value: AuthProvider.instance,
+        child: _loginPageUI(),
+      ),
     );
   }
 
   Widget _loginPageUI() {
-    return Center(
-      child: Container(
-        height: _deviceHeight*0.60,
-        padding: EdgeInsets.symmetric(horizontal: _deviceWidth * 0.04),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          mainAxisSize: MainAxisSize.max,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _headingWidget(),
-            _inputForm(),
-            _loginButton(),
-            _registerButton()
-          ],
-        ),
-      ),
+    return Builder(
+      builder: (_context) {
+        _authProvider=Provider.of<AuthProvider>(_context);
+        return Center(
+          child: Container(
+            height: _deviceHeight * 0.60,
+            padding: EdgeInsets.symmetric(horizontal: _deviceWidth * 0.04),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisSize: MainAxisSize.max,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _headingWidget(),
+                _inputForm(),
+                _loginButton(),
+                _registerButton()
+              ],
+            ),
+          ),
+        );
+
+      },
     );
   }
 
@@ -77,10 +94,11 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget _inputForm() {
     return Container(
-      // height: _deviceHeight * 0.16,
       child: Form(
         key: _formKey,
-        onChanged: () {},
+        onChanged: () {
+          _formKey.currentState!.save();
+        },
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -96,11 +114,13 @@ class _LoginPageState extends State<LoginPage> {
       autocorrect: false,
       style: TextStyle(color: Colors.white),
       validator: (value) {
-        return value!.length!=0 && value.contains('@')?null:"Please Enter a valid Email";
+        return value!.length != 0 && value.contains('@')
+            ? null
+            : "Please Enter a valid Email";
       },
       onSaved: (newValue) {
         setState(() {
-          _email=newValue!;
+          _email = newValue!;
         });
       },
       cursorColor: Colors.white,
@@ -119,11 +139,13 @@ class _LoginPageState extends State<LoginPage> {
       obscureText: true,
       style: TextStyle(color: Colors.white),
       validator: (value) {
-        return value!.length>8?null:"Password should be more than 8 characters";
+        return value!.length > 8
+            ? null
+            : "Password should be more than 8 characters";
       },
       onSaved: (newValue) {
         setState(() {
-          _password=newValue!;
+          _password = newValue!;
         });
       },
       cursorColor: Colors.white,
@@ -141,38 +163,36 @@ class _LoginPageState extends State<LoginPage> {
       height: _deviceHeight * 0.06,
       width: _deviceWidth,
       child: MaterialButton(
-        height: _deviceHeight*0.06,
+        height: _deviceHeight * 0.06,
         onPressed: () {
-          if(_formKey.currentState!.validate()){{
-            //Navigate to home Page
-          }}
+          if (_formKey.currentState!.validate()) {
+            {
+              //Navigate to home Page
+            }
+          }
         },
         color: Colors.blue,
         child: Text(
           "LOGIN",
-          style: TextStyle(fontSize: 18,fontWeight: FontWeight.w700),
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
         ),
       ),
     );
   }
 
-  Widget _registerButton(){
+  Widget _registerButton() {
     return GestureDetector(
-      onTap: (){},
+      onTap: () {},
       child: Container(
-        height: _deviceWidth*0.06,
+        height: _deviceWidth * 0.06,
         width: _deviceWidth,
         child: Text(
           "Register",
           textAlign: TextAlign.center,
           style: TextStyle(
-            fontSize: 15,
-            fontWeight: FontWeight.w700,
-            color: Colors.white60
-          ),
+              fontSize: 15, fontWeight: FontWeight.w700, color: Colors.white60),
         ),
       ),
     );
   }
-
 }

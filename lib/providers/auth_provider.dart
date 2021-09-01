@@ -36,6 +36,8 @@ class AuthProvider extends ChangeNotifier {
       //Navigate to Home Page
     } catch (e) {
       status=AuthStatus.Error;
+      //Display Error
     }
+    notifyListeners();
   }
 }
