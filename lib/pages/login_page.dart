@@ -25,8 +25,6 @@ class _LoginPageState extends State<LoginPage> {
     _formKey = GlobalKey<FormState>();
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations(
@@ -35,7 +33,7 @@ class _LoginPageState extends State<LoginPage> {
     _deviceHeight = MediaQuery.of(context).size.height;
     _deviceWidth = MediaQuery.of(context).size.width;
 
-    SnackBarService.instance.buildContext=context;
+    SnackBarService.instance.buildContext = context;
 
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
