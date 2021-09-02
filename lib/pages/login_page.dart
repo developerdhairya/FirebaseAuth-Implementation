@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:vartaa_messenger/providers/auth_provider.dart';
+import 'package:vartaa_messenger/services/snackbar_service.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -24,14 +25,17 @@ class _LoginPageState extends State<LoginPage> {
     _formKey = GlobalKey<FormState>();
   }
 
+
+
   @override
   Widget build(BuildContext context) {
-
     SystemChrome.setPreferredOrientations(
         [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
 
     _deviceHeight = MediaQuery.of(context).size.height;
     _deviceWidth = MediaQuery.of(context).size.width;
+
+    SnackBarService.instance.buildContext=context;
 
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
@@ -45,7 +49,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget _loginPageUI() {
     return Builder(
       builder: (_context) {
-        _authProvider=Provider.of<AuthProvider>(_context);
+        _authProvider = Provider.of<AuthProvider>(_context);
         return Center(
           child: Container(
             height: _deviceHeight * 0.60,
@@ -63,7 +67,6 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ),
         );
-
       },
     );
   }
@@ -112,6 +115,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget _emailTextField() {
     return TextFormField(
       autocorrect: false,
+      keyboardType: TextInputType.emailAddress,
       style: TextStyle(color: Colors.white),
       validator: (value) {
         return value!.length != 0 && value.contains('@')
@@ -137,6 +141,7 @@ class _LoginPageState extends State<LoginPage> {
     return TextFormField(
       autocorrect: false,
       obscureText: true,
+      keyboardType: TextInputType.visiblePassword,
       style: TextStyle(color: Colors.white),
       validator: (value) {
         return value!.length > 8
@@ -159,25 +164,28 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget _loginButton() {
-    return Container(
-      height: _deviceHeight * 0.06,
-      width: _deviceWidth,
-      child: MaterialButton(
-        height: _deviceHeight * 0.06,
-        onPressed: () {
-          if (_formKey.currentState!.validate()) {
-            {
-              //Navigate to home Page
-            }
-          }
-        },
-        color: Colors.blue,
-        child: Text(
-          "LOGIN",
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
-        ),
-      ),
-    );
+    return _authProvider.status == AuthStatus.Authenticating
+        ? Center(child: CircularProgressIndicator())
+        : Container(
+            height: _deviceHeight * 0.06,
+            width: _deviceWidth,
+            child: MaterialButton(
+              height: _deviceHeight * 0.06,
+              onPressed: () {
+                if (_formKey.currentState!.validate()) {
+                  {
+                    _authProvider.loginUserWithEmailAndPassword(
+                        _email, _password);
+                  }
+                }
+              },
+              color: Colors.blue,
+              child: Text(
+                "LOGIN",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+              ),
+            ),
+          );
   }
 
   Widget _registerButton() {
