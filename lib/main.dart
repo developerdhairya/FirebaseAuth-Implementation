@@ -29,6 +29,10 @@ class _VartaaMessengerState extends State<VartaaMessenger> {
         primarySwatch: Colors.blue,
       ),
       home: RegistrationPage(),
+      routes: {
+        "/login": (BuildContext context)=>LoginPage(),
+        "/register":(BuildContext context)=>RegistrationPage(),
+      },
     );
   }
 }

@@ -41,6 +41,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
             _headingWidget(),
             _inputForm(),
             _registerButton(),
+            _backToLoginPageButton(),
           ],
         ),
       ),
@@ -190,15 +191,24 @@ class _RegistrationPageState extends State<RegistrationPage> {
       child: MaterialButton(
         height: _deviceHeight * 0.06,
         onPressed: () {
-          if (_formKey.currentState!.validate()) {
-            {}
-          }
+          if (_formKey.currentState!.validate()) {}
         },
         color: Colors.blue,
         child: Text(
           "Register",
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
         ),
+      ),
+    );
+  }
+
+  Widget _backToLoginPageButton(){
+    return GestureDetector(
+      onTap: (){},
+      child: Container(
+        height: _deviceHeight*0.06,
+        width: _deviceWidth,
+        child: Icon(Icons.arrow_back,size: 40,),
       ),
     );
   }
