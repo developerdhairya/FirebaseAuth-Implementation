@@ -9,6 +9,7 @@ enum AuthStatus {
   UserNotFound,
   Error
 }
+//k
 
 class AuthProvider extends ChangeNotifier {
 
