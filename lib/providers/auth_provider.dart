@@ -9,7 +9,6 @@ enum AuthStatus {
   UserNotFound,
   Error
 }
-//k
 
 class AuthProvider extends ChangeNotifier {
 
@@ -36,7 +35,7 @@ class AuthProvider extends ChangeNotifier {
       user=_result.user!;
       status=AuthStatus.Authenticated;
       //Navigate to Home Page
-      SnackBarService.instance.showSnackBarError("Welcome,${user.email}");
+      SnackBarService.instance.showSnackBarSuccess("Welcome,${user.email}");
       debugPrint("Login Successful");
     } catch (e) {
       status=AuthStatus.Error;

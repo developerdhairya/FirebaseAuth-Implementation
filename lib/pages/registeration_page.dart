@@ -1,4 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:vartaa_messenger/providers/user_image_provider.dart';
+
+import 'package:vartaa_messenger/services/navigation_service.dart';
 
 class RegistrationPage extends StatefulWidget {
   const RegistrationPage({Key? key}) : super(key: key);
@@ -13,6 +19,8 @@ class _RegistrationPageState extends State<RegistrationPage> {
   late double _deviceHeight;
   late double _deviceWidth;
 
+  late UserImageProvider _userImageProvider;
+
   _RegistrationPageState() {
     _formKey = GlobalKey<FormState>();
   }
@@ -23,26 +31,30 @@ class _RegistrationPageState extends State<RegistrationPage> {
     _deviceWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
-      body: _registrationPageUI(),
-    );
+        backgroundColor: Theme.of(context).backgroundColor,
+        body: ChangeNotifierProvider<UserImageProvider>.value(
+          value: UserImageProvider.instance,
+          child: _registrationPageUI(),
+        ));
   }
 
   Widget _registrationPageUI() {
     return Center(
-      child: Container(
-        height: _deviceHeight * 0.75,
-        padding: EdgeInsets.symmetric(horizontal: _deviceWidth * 0.10),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          mainAxisSize: MainAxisSize.max,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _headingWidget(),
-            _inputForm(),
-            _registerButton(),
-            _backToLoginPageButton(),
-          ],
+      child: SingleChildScrollView(
+        child: Container(
+          height: _deviceHeight * 0.75,
+          padding: EdgeInsets.symmetric(horizontal: _deviceWidth * 0.10),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _headingWidget(),
+              _inputForm(),
+              _registerButton(),
+              _backToLoginPageButton(),
+            ],
+          ),
         ),
       ),
     );
@@ -93,20 +105,35 @@ class _RegistrationPageState extends State<RegistrationPage> {
   }
 
   Widget _imageSelectorWidget() {
-    return Center(
-      child: Container(
-        alignment: Alignment.center,
-        height: _deviceHeight * 0.15,
-        width: _deviceWidth * 0.30,
-        decoration: BoxDecoration(
-            color: Colors.green,
-            borderRadius: BorderRadius.circular(500),
-            image: DecorationImage(
-              image: NetworkImage(
-                  "https://cdn0.iconfinder.com/data/icons/occupation-002/64/programmer-programming-occupation-avatar-512.png"),
-              fit: BoxFit.cover,
-            )),
-      ),
+    return Builder(
+      builder: (_context) {
+        _userImageProvider = Provider.of<UserImageProvider>(_context);
+        return Center(
+          child: GestureDetector(
+            onTap: () {
+              UserImageProvider.instance.getUserImage();
+            },
+            child: _userImageProvider.status==UserImageStatus.Fetching?CircularProgressIndicator():Container(
+              alignment: Alignment.center,
+              height: _deviceHeight * 0.15,
+              width: _deviceWidth * 0.30,
+              decoration: BoxDecoration(
+                  color: Colors.green,
+                  borderRadius: BorderRadius.circular(500),
+                  image: _userImageProvider.status == UserImageStatus.Fetched
+                      ? DecorationImage(
+                          image: FileImage(_userImageProvider.userImage),
+                          fit: BoxFit.cover,
+                        )
+                      : DecorationImage(
+                          image: NetworkImage(
+                              "https://cdn0.iconfinder.com/data/icons/occupation-002/64/programmer-programming-occupation-avatar-512.png"),
+                          fit: BoxFit.cover,
+                        )),
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -202,13 +229,18 @@ class _RegistrationPageState extends State<RegistrationPage> {
     );
   }
 
-  Widget _backToLoginPageButton(){
+  Widget _backToLoginPageButton() {
     return GestureDetector(
-      onTap: (){},
+      onTap: () {
+        NavigationService.instance.goBack();
+      },
       child: Container(
-        height: _deviceHeight*0.06,
+        height: _deviceHeight * 0.06,
         width: _deviceWidth,
-        child: Icon(Icons.arrow_back,size: 40,),
+        child: Icon(
+          Icons.arrow_back,
+          size: 40,
+        ),
       ),
     );
   }

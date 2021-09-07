@@ -2,28 +2,28 @@ import 'package:flutter/material.dart';
 
 class NavigationService{
 
-  late GlobalKey<NavigatorState> _navigatorKey;
+  late GlobalKey<NavigatorState> navigatorKey;
 
   static NavigationService instance=NavigationService();
 
   NavigationService(){
-    _navigatorKey=GlobalKey<NavigatorState>();
+    navigatorKey=GlobalKey<NavigatorState>();
   }
 
   Future<dynamic> navigateToReplacement(String _routeName){
-    return _navigatorKey.currentState!.pushReplacementNamed(_routeName);
+    return navigatorKey.currentState!.pushReplacementNamed(_routeName);
   }
 
   Future<dynamic> navigateTo(String _routeName){
-    return _navigatorKey.currentState!.pushNamed(_routeName);
+    return navigatorKey.currentState!.pushNamed(_routeName);
   }
 
   Future<dynamic> navigateToRoute(MaterialPageRoute _route){
-    return _navigatorKey.currentState!.push(_route);
+    return navigatorKey.currentState!.push(_route);
   }
 
   void goBack(){
-    return _navigatorKey.currentState!.pop();
+    return navigatorKey.currentState!.pop();
   }
 
 }

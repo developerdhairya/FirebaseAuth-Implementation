@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:vartaa_messenger/pages/login_page.dart';
 import 'package:vartaa_messenger/pages/registeration_page.dart';
+import 'package:vartaa_messenger/services/navigation_service.dart';
 
 void main()async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,6 +22,7 @@ class _VartaaMessengerState extends State<VartaaMessenger> {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: "Vartaa Messenger",
+      navigatorKey: NavigationService.instance.navigatorKey,
       theme: ThemeData(
         brightness: Brightness.dark,
         primaryColor: Color.fromRGBO(42,117,188,1),
@@ -28,10 +30,10 @@ class _VartaaMessengerState extends State<VartaaMessenger> {
         backgroundColor: Color.fromRGBO(28,27,27,1),
         primarySwatch: Colors.blue,
       ),
-      home: RegistrationPage(),
+      initialRoute: "/login",
       routes: {
-        "/login": (BuildContext context)=>LoginPage(),
-        "/register":(BuildContext context)=>RegistrationPage(),
+        "/login": (context)=>LoginPage(),
+        "/register":(context)=>RegistrationPage(),
       },
     );
   }
