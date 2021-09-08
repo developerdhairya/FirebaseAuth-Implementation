@@ -238,7 +238,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
             height: _deviceHeight * 0.06,
             onPressed: () {
               if (_formKey.currentState!.validate()) {
-                AuthProvider.instance.registerUserWithEmailAndPassword(_email, _password);
+                AuthProvider.instance.registerUserWithEmailAndPassword(_email, _password,_name);
               }
             },
             color: Colors.blue,
