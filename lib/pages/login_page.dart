@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:vartaa_messenger/providers/auth_provider.dart';
-import 'package:vartaa_messenger/services/low-lvl/navigation_service.dart';
-import 'package:vartaa_messenger/services/low-lvl/snackbar_service.dart';
+import 'package:vartaa_messenger/services/navigation_service.dart';
+import 'package:vartaa_messenger/services/snackbar_service.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);

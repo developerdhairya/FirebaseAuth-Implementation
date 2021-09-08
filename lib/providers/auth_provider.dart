@@ -1,9 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:vartaa_messenger/providers/user_image_provider.dart';
-import 'package:vartaa_messenger/services/low-lvl/cloud_storage_service.dart';
-import 'package:vartaa_messenger/services/low-lvl/firestore_service.dart';
-import 'package:vartaa_messenger/services/low-lvl/snackbar_service.dart';
+import 'package:vartaa_messenger/services/cloud_storage_service.dart';
+import 'package:vartaa_messenger/services/firestore_service.dart';
+import 'package:vartaa_messenger/services/snackbar_service.dart';
 
 enum AuthStatus {
   NotAuthenticated,
@@ -56,6 +56,8 @@ class AuthProvider extends ChangeNotifier {
       UserCredential _result = await _auth.createUserWithEmailAndPassword(
           email: _email, password: _password);
       user = _result.user!;
+      await FirestoreService.instance.createUserInDB(user.uid, _name, _email, UserImageProvider.instance.userImage.path);
+      await CloudStorageService.instance.uploadUserImage(user.uid, UserImageProvider.instance.userImage);
       status = AuthStatus.Authenticated;
       SnackBarService.instance.showSnackBarSuccess("Welcome,${user.email}");
       //Update Last Seen
