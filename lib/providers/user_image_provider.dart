@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:vartaa_messenger/services/media_service.dart';
-import 'package:vartaa_messenger/services/snackbar_service.dart';
+import 'package:vartaa_messenger/services/low-lvl/media_service.dart';
+import 'package:vartaa_messenger/services/low-lvl/snackbar_service.dart';
 
 enum UserImageStatus {
   NotFetched,

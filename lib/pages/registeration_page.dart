@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:vartaa_messenger/providers/auth_provider.dart';
 import 'package:vartaa_messenger/providers/user_image_provider.dart';
 
-import 'package:vartaa_messenger/services/navigation_service.dart';
+import 'package:vartaa_messenger/services/low-lvl/navigation_service.dart';
 
 class RegistrationPage extends StatefulWidget {
   const RegistrationPage({Key? key}) : super(key: key);

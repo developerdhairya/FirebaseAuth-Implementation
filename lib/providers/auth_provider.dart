@@ -1,9 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:vartaa_messenger/providers/user_image_provider.dart';
-import 'package:vartaa_messenger/services/cloud_storage_service.dart';
-import 'package:vartaa_messenger/services/firestore_service.dart';
-import 'package:vartaa_messenger/services/snackbar_service.dart';
+import 'package:vartaa_messenger/services/low-lvl/cloud_storage_service.dart';
+import 'package:vartaa_messenger/services/low-lvl/firestore_service.dart';
+import 'package:vartaa_messenger/services/low-lvl/snackbar_service.dart';
 
 enum AuthStatus {
   NotAuthenticated,
@@ -60,11 +60,8 @@ class AuthProvider extends ChangeNotifier {
       SnackBarService.instance.showSnackBarSuccess("Welcome,${user.email}");
       //Update Last Seen
       //Navigate to Home Page
-      debugPrint("Login Successful");
     } catch (e) {
       status = AuthStatus.Error;
-      //Display Error
-      debugPrint("Login Failed" + e.toString());
       SnackBarService.instance.showSnackBarError("Error Authenticating");
     }
     notifyListeners();
