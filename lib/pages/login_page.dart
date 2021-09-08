@@ -122,9 +122,9 @@ class _LoginPageState extends State<LoginPage> {
             : "Please Enter a valid Email";
       },
       onSaved: (newValue) {
-        setState(() {
+        // setState(() {
           _email = newValue!;
-        });
+        // });
       },
       cursorColor: Colors.white,
       decoration: InputDecoration(
@@ -148,9 +148,9 @@ class _LoginPageState extends State<LoginPage> {
             : "Password should be more than 8 characters";
       },
       onSaved: (newValue) {
-        setState(() {
+        // setState(() {
           _password = newValue!;
-        });
+        // });
       },
       cursorColor: Colors.white,
       decoration: InputDecoration(

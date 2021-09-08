@@ -1,7 +1,6 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:vartaa_messenger/providers/auth_provider.dart';
 import 'package:vartaa_messenger/providers/user_image_provider.dart';
 
 import 'package:vartaa_messenger/services/navigation_service.dart';
@@ -19,7 +18,12 @@ class _RegistrationPageState extends State<RegistrationPage> {
   late double _deviceHeight;
   late double _deviceWidth;
 
+  late String _name;
+  late String _email;
+  late String _password;
+
   late UserImageProvider _userImageProvider;
+  late AuthProvider _authProvider;
 
   _RegistrationPageState() {
     _formKey = GlobalKey<FormState>();
@@ -31,11 +35,19 @@ class _RegistrationPageState extends State<RegistrationPage> {
     _deviceWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
-        backgroundColor: Theme.of(context).backgroundColor,
-        body: ChangeNotifierProvider<UserImageProvider>.value(
-          value: UserImageProvider.instance,
-          child: _registrationPageUI(),
-        ));
+      backgroundColor: Theme.of(context).backgroundColor,
+      body: MultiProvider(
+        providers: [
+          ChangeNotifierProvider<UserImageProvider>.value(
+            value: UserImageProvider.instance,
+          ),
+          ChangeNotifierProvider<AuthProvider>.value(
+            value: AuthProvider.instance,
+          )
+        ],
+        child: _registrationPageUI(),
+      ),
+    );
   }
 
   Widget _registrationPageUI() {
@@ -89,6 +101,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
       height: _deviceHeight * 0.40,
       child: Form(
         key: _formKey,
+        onChanged: (){_formKey.currentState!.save();},
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           mainAxisSize: MainAxisSize.max,
@@ -111,26 +124,29 @@ class _RegistrationPageState extends State<RegistrationPage> {
         return Center(
           child: GestureDetector(
             onTap: () {
-              UserImageProvider.instance.getUserImage();
+              UserImageProvider.instance.addUserImage();
             },
-            child: _userImageProvider.status==UserImageStatus.Fetching?CircularProgressIndicator():Container(
-              alignment: Alignment.center,
-              height: _deviceHeight * 0.15,
-              width: _deviceWidth * 0.30,
-              decoration: BoxDecoration(
-                  color: Colors.green,
-                  borderRadius: BorderRadius.circular(500),
-                  image: _userImageProvider.status == UserImageStatus.Fetched
-                      ? DecorationImage(
-                          image: FileImage(_userImageProvider.userImage),
-                          fit: BoxFit.cover,
-                        )
-                      : DecorationImage(
-                          image: NetworkImage(
-                              "https://cdn0.iconfinder.com/data/icons/occupation-002/64/programmer-programming-occupation-avatar-512.png"),
-                          fit: BoxFit.cover,
-                        )),
-            ),
+            child: _userImageProvider.status == UserImageStatus.Fetching
+                ? CircularProgressIndicator()
+                : Container(
+                    alignment: Alignment.center,
+                    height: _deviceHeight * 0.15,
+                    width: _deviceWidth * 0.30,
+                    decoration: BoxDecoration(
+                        color: Colors.green,
+                        borderRadius: BorderRadius.circular(500),
+                        image: _userImageProvider.status ==
+                                UserImageStatus.Fetched
+                            ? DecorationImage(
+                                image: FileImage(_userImageProvider.userImage),
+                                fit: BoxFit.cover,
+                              )
+                            : DecorationImage(
+                                image: NetworkImage(
+                                    "https://cdn0.iconfinder.com/data/icons/occupation-002/64/programmer-programming-occupation-avatar-512.png"),
+                                fit: BoxFit.cover,
+                              )),
+                  ),
           ),
         );
       },
@@ -147,7 +163,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
       },
       onSaved: (newValue) {
         setState(() {
-          // _email = newValue!;
+          _name = newValue!;
         });
       },
       cursorColor: Colors.white,
@@ -172,7 +188,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
       },
       onSaved: (newValue) {
         setState(() {
-          // _email = newValue!;
+          _email = newValue!;
         });
       },
       cursorColor: Colors.white,
@@ -198,7 +214,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
       },
       onSaved: (newValue) {
         setState(() {
-          // _password = newValue!;
+          _password = newValue!;
         });
       },
       cursorColor: Colors.white,
@@ -212,20 +228,27 @@ class _RegistrationPageState extends State<RegistrationPage> {
   }
 
   Widget _registerButton() {
-    return Container(
-      height: _deviceHeight * 0.06,
-      width: _deviceWidth,
-      child: MaterialButton(
-        height: _deviceHeight * 0.06,
-        onPressed: () {
-          if (_formKey.currentState!.validate()) {}
-        },
-        color: Colors.blue,
-        child: Text(
-          "Register",
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
-        ),
-      ),
+    return Builder(
+      builder: (_context){
+        _authProvider=Provider.of<AuthProvider>(_context);
+        return _authProvider.status==AuthStatus.Authenticating?CircularProgressIndicator():Container(
+          height: _deviceHeight * 0.06,
+          width: _deviceWidth,
+          child: MaterialButton(
+            height: _deviceHeight * 0.06,
+            onPressed: () {
+              if (_formKey.currentState!.validate()) {
+                AuthProvider.instance.registerUserWithEmailAndPassword(_email, _password);
+              }
+            },
+            color: Colors.blue,
+            child: Text(
+              "Register",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+            ),
+          ),
+        );
+      },
     );
   }
 

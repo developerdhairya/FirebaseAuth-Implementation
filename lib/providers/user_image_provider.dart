@@ -17,7 +17,7 @@ class UserImageProvider extends ChangeNotifier {
 
   static UserImageProvider instance = UserImageProvider();
 
-  void getUserImage() async {
+  void addUserImage() async {
     status = UserImageStatus.Fetching;
     try {
       userImage = await MediaService.instance.getImageFromLibrary();
