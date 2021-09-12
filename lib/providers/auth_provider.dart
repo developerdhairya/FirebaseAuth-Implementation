@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:vartaa_messenger/providers/user_image_provider.dart';
 import 'package:vartaa_messenger/services/cloud_storage_service.dart';
 import 'package:vartaa_messenger/services/firestore_service.dart';
+import 'package:vartaa_messenger/services/navigation_service.dart';
 import 'package:vartaa_messenger/services/snackbar_service.dart';
 
 enum AuthStatus {
@@ -14,7 +15,7 @@ enum AuthStatus {
 }
 
 class AuthProvider extends ChangeNotifier {
-  late User user;
+  User? user;
 
   AuthStatus? status;
 
@@ -24,10 +25,26 @@ class AuthProvider extends ChangeNotifier {
 
   AuthProvider() {
     _auth = FirebaseAuth.instance;
+    isUserAuthenticated();
   }
 
-  Future<void> loginUserWithEmailAndPassword(String _email,
-      String _password) async {
+  void _autoLogin() {
+    if (user!=null) {
+      NavigationService.instance.navigateToReplacement("/home");
+    }
+  }
+
+  void isUserAuthenticated() async{
+    user=_auth.currentUser;
+    if(user!=null){
+      notifyListeners();
+      _autoLogin();
+    }
+  }
+
+
+  Future<void> loginUserWithEmailAndPassword(
+      String _email, String _password) async {
     status = AuthStatus.Authenticating;
     notifyListeners();
     try {
@@ -37,7 +54,7 @@ class AuthProvider extends ChangeNotifier {
       );
       user = _result.user!;
       status = AuthStatus.Authenticated;
-      SnackBarService.instance.showSnackBarSuccess("Welcome,${user.email}");
+      SnackBarService.instance.showSnackBarSuccess("Welcome,${user!.email}");
       //Update Last Seen
       //Navigate to Home Page
     } catch (e) {
@@ -47,8 +64,8 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void registerUserWithEmailAndPassword(String _email, String _password,
-      String _name) async {
+  void registerUserWithEmailAndPassword(
+      String _email, String _password, String _name) async {
     status = AuthStatus.Authenticating;
     notifyListeners();
 
@@ -56,10 +73,12 @@ class AuthProvider extends ChangeNotifier {
       UserCredential _result = await _auth.createUserWithEmailAndPassword(
           email: _email, password: _password);
       user = _result.user!;
-      await FirestoreService.instance.createUserInDB(user.uid, _name, _email, UserImageProvider.instance.userImage.path);
-      await CloudStorageService.instance.uploadUserImage(user.uid, UserImageProvider.instance.userImage);
+      await FirestoreService.instance.createUserInDB(
+          user!.uid, _name, _email, UserImageProvider.instance.userImage.path);
+      await CloudStorageService.instance
+          .uploadUserImage(user!.uid, UserImageProvider.instance.userImage);
       status = AuthStatus.Authenticated;
-      SnackBarService.instance.showSnackBarSuccess("Welcome,${user.email}");
+      SnackBarService.instance.showSnackBarSuccess("Welcome,${user!.email}");
       //Update Last Seen
       //Navigate to Home Page
     } catch (e) {

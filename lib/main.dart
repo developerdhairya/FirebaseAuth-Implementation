@@ -1,8 +1,9 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:vartaa_messenger/pages/home_page.dart';
 import 'package:vartaa_messenger/pages/login_page.dart';
 import 'package:vartaa_messenger/pages/registeration_page.dart';
-import 'package:vartaa_messenger/services/low-lvl/navigation_service.dart';
+import 'package:vartaa_messenger/services/navigation_service.dart';
 
 void main()async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -34,6 +35,7 @@ class _VartaaMessengerState extends State<VartaaMessenger> {
       routes: {
         "/login": (context)=>LoginPage(),
         "/register":(context)=>RegistrationPage(),
+        "/home":(context)=>HomePage()
       },
     );
   }
