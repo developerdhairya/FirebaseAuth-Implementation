@@ -134,13 +134,12 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     height: _deviceHeight * 0.15,
                     width: _deviceWidth * 0.30,
                     decoration: BoxDecoration(
-                      color: Colors.green,
-                      borderRadius: BorderRadius.circular(500),
-                      image:DecorationImage(
-                              image: _userAvatarProvider.userAvatar,
-                              fit: BoxFit.cover,
-                            )
-                    ),
+                        color: Colors.green,
+                        borderRadius: BorderRadius.circular(500),
+                        image: DecorationImage(
+                          image: _userAvatarProvider.userAvatar,
+                          fit: BoxFit.cover,
+                        )),
                   ),
           ),
         );
@@ -227,7 +226,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
       builder: (_context) {
         _authProvider = Provider.of<AuthProvider>(_context);
         return _authProvider.status == AuthStatus.Authenticating
-            ? CircularProgressIndicator()
+            ? Center(child: CircularProgressIndicator())
             : Container(
                 height: _deviceHeight * 0.06,
                 width: _deviceWidth,

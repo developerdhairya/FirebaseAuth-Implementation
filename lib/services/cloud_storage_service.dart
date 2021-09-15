@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:vartaa_messenger/providers/user_avatar_provider.dart';
 
 class CloudStorageService {
   late FirebaseStorage _storage;
@@ -15,7 +16,10 @@ class CloudStorageService {
     _baseRef = _storage.ref();
   }
 
-  Future<TaskSnapshot> uploadUserImage(String _uid, File ? _image) async {
-    return _baseRef.child(_profileImages).child(_uid).putFile(_image!);
+  Future<String> uploadUserImage(String _uid) async {
+    Reference _reference = _baseRef.child(_profileImages).child(_uid);
+    TaskSnapshot _uploadSnapshot =
+        await _reference.putFile(UserAvatarProvider.instance.userImage);
+    return await _reference.getDownloadURL();
   }
 }

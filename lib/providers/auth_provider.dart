@@ -4,6 +4,7 @@ import 'package:vartaa_messenger/providers/user_avatar_provider.dart';
 import 'package:vartaa_messenger/services/cloud_storage_service.dart';
 import 'package:vartaa_messenger/services/firestore_service.dart';
 import 'package:vartaa_messenger/services/navigation_service.dart';
+import 'package:vartaa_messenger/services/registration_service.dart';
 import 'package:vartaa_messenger/services/snackbar_service.dart';
 
 enum AuthStatus {
@@ -65,25 +66,14 @@ class AuthProvider extends ChangeNotifier {
   }
 
   void registerUserWithEmailAndPassword(
-      String _email, String _password, String _name) async {
+      String _email, String _password, String _username) async {
     status = AuthStatus.Authenticating;
     notifyListeners();
     try {
-      UserCredential _result = await _auth.createUserWithEmailAndPassword(
-          email: _email, password: _password);
-      user = _result.user!;
-      await FirestoreService.instance.createUserInDB(
-          user.uid, _name, _email, UserAvatarProvider.instance.userImage.path);
-      if (UserAvatarProvider.instance.status == UserImageStatus.Fetched) {
-        await CloudStorageService.instance
-            .uploadUserImage(user.uid, UserAvatarProvider.instance.userImage);
-      }
+      user = await AuthService.instance.registerUser(_email, _password, _username);
       status = AuthStatus.Authenticated;
-      SnackBarService.instance.showSnackBarSuccess("Welcome,${user.email}");
-      //Update Last Seen
-      //Navigate to Home Pages
+
     } catch (e) {
-      debugPrint(e.toString());
       status = AuthStatus.Error;
       SnackBarService.instance.showSnackBarError("Error Authenticating");
     }
