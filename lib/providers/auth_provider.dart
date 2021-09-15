@@ -1,8 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:vartaa_messenger/providers/user_avatar_provider.dart';
-import 'package:vartaa_messenger/services/cloud_storage_service.dart';
-import 'package:vartaa_messenger/services/firestore_service.dart';
 import 'package:vartaa_messenger/services/navigation_service.dart';
 import 'package:vartaa_messenger/services/registration_service.dart';
 import 'package:vartaa_messenger/services/snackbar_service.dart';
@@ -49,15 +46,8 @@ class AuthProvider extends ChangeNotifier {
     status = AuthStatus.Authenticating;
     notifyListeners();
     try {
-      UserCredential _result = await _auth.signInWithEmailAndPassword(
-        email: _email,
-        password: _password,
-      );
-      user = _result.user!;
+      user = await AuthService.instance.loginUser(_email, _password);
       status = AuthStatus.Authenticated;
-      SnackBarService.instance.showSnackBarSuccess("Welcome,${user.email}");
-      //Update Last Seen
-      //Navigate to Home Page
     } catch (e) {
       status = AuthStatus.Error;
       SnackBarService.instance.showSnackBarError("Error Authenticating");
@@ -70,9 +60,9 @@ class AuthProvider extends ChangeNotifier {
     status = AuthStatus.Authenticating;
     notifyListeners();
     try {
-      user = await AuthService.instance.registerUser(_email, _password, _username);
+      user =
+          await AuthService.instance.registerUser(_email, _password, _username);
       status = AuthStatus.Authenticated;
-
     } catch (e) {
       status = AuthStatus.Error;
       SnackBarService.instance.showSnackBarError("Error Authenticating");
