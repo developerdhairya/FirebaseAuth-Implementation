@@ -100,7 +100,9 @@ class _RegistrationPageState extends State<RegistrationPage> {
       height: _deviceHeight * 0.40,
       child: Form(
         key: _formKey,
-        onChanged: (){_formKey.currentState!.save();},
+        onChanged: () {
+          _formKey.currentState!.save();
+        },
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           mainAxisSize: MainAxisSize.max,
@@ -132,19 +134,20 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     height: _deviceHeight * 0.15,
                     width: _deviceWidth * 0.30,
                     decoration: BoxDecoration(
-                        color: Colors.green,
-                        borderRadius: BorderRadius.circular(500),
-                        image: _userImageProvider.status ==
-                                UserImageStatus.Fetched
-                            ? DecorationImage(
-                                image: FileImage(_userImageProvider.userImage),
-                                fit: BoxFit.cover,
-                              )
-                            : DecorationImage(
-                                image: NetworkImage(
-                                    "https://cdn0.iconfinder.com/data/icons/occupation-002/64/programmer-programming-occupation-avatar-512.png"),
-                                fit: BoxFit.cover,
-                              )),
+                      color: Colors.green,
+                      borderRadius: BorderRadius.circular(500),
+                      image: _userImageProvider.status ==
+                              UserImageStatus.Fetched
+                          ? DecorationImage(
+                              image: FileImage(_userImageProvider.userImage),
+                              fit: BoxFit.cover,
+                            )
+                          : DecorationImage(
+                              image: NetworkImage(
+                                  "https://cdn0.iconfinder.com/data/icons/occupation-002/64/programmer-programming-occupation-avatar-512.png"),
+                              fit: BoxFit.cover,
+                            ),
+                    ),
                   ),
           ),
         );
@@ -228,25 +231,28 @@ class _RegistrationPageState extends State<RegistrationPage> {
 
   Widget _registerButton() {
     return Builder(
-      builder: (_context){
-        _authProvider=Provider.of<AuthProvider>(_context);
-        return _authProvider.status==AuthStatus.Authenticating?CircularProgressIndicator():Container(
-          height: _deviceHeight * 0.06,
-          width: _deviceWidth,
-          child: MaterialButton(
-            height: _deviceHeight * 0.06,
-            onPressed: () {
-              if (_formKey.currentState!.validate()) {
-                AuthProvider.instance.registerUserWithEmailAndPassword(_email, _password,_name);
-              }
-            },
-            color: Colors.blue,
-            child: Text(
-              "Register",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
-            ),
-          ),
-        );
+      builder: (_context) {
+        _authProvider = Provider.of<AuthProvider>(_context);
+        return _authProvider.status == AuthStatus.Authenticating
+            ? CircularProgressIndicator()
+            : Container(
+                height: _deviceHeight * 0.06,
+                width: _deviceWidth,
+                child: MaterialButton(
+                  height: _deviceHeight * 0.06,
+                  onPressed: () {
+                    if (_formKey.currentState!.validate()) {
+                      AuthProvider.instance.registerUserWithEmailAndPassword(
+                          _email, _password, _name);
+                    }
+                  },
+                  color: Colors.blue,
+                  child: Text(
+                    "Register",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+                  ),
+                ),
+              );
       },
     );
   }

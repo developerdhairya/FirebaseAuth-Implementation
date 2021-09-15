@@ -15,7 +15,7 @@ class CloudStorageService {
     _baseRef = _storage.ref();
   }
 
-  Future<TaskSnapshot> uploadUserImage(String _uid, File _image) async {
-    return _baseRef.child(_profileImages).child(_uid).putFile(_image);
+  Future<TaskSnapshot> uploadUserImage(String _uid, File ? _image) async {
+    return _baseRef.child(_profileImages).child(_uid).putFile(_image!);
   }
 }

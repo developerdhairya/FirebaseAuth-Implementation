@@ -15,7 +15,7 @@ enum AuthStatus {
 }
 
 class AuthProvider extends ChangeNotifier {
-  User? user;
+  late User user;
 
   AuthStatus? status;
 
@@ -29,19 +29,19 @@ class AuthProvider extends ChangeNotifier {
   }
 
   void _autoLogin() {
-    if (user!=null) {
+    if (status == AuthStatus.Authenticated) {
       NavigationService.instance.navigateToReplacement("/home");
     }
   }
 
-  void isUserAuthenticated() async{
-    user=_auth.currentUser;
-    if(user!=null){
+  void isUserAuthenticated() async {
+    if (_auth.currentUser != null) {
+      user = _auth.currentUser!;
+      status = AuthStatus.Authenticated;
       notifyListeners();
       _autoLogin();
     }
   }
-
 
   Future<void> loginUserWithEmailAndPassword(
       String _email, String _password) async {
@@ -54,7 +54,7 @@ class AuthProvider extends ChangeNotifier {
       );
       user = _result.user!;
       status = AuthStatus.Authenticated;
-      SnackBarService.instance.showSnackBarSuccess("Welcome,${user!.email}");
+      SnackBarService.instance.showSnackBarSuccess("Welcome,${user.email}");
       //Update Last Seen
       //Navigate to Home Page
     } catch (e) {
@@ -74,14 +74,18 @@ class AuthProvider extends ChangeNotifier {
           email: _email, password: _password);
       user = _result.user!;
       await FirestoreService.instance.createUserInDB(
-          user!.uid, _name, _email, UserImageProvider.instance.userImage.path);
-      await CloudStorageService.instance
-          .uploadUserImage(user!.uid, UserImageProvider.instance.userImage);
+          user.uid, _name, _email, UserImageProvider.instance.userImage.path);
+      if (UserImageProvider.instance.status == UserImageStatus.Fetched) {
+        await CloudStorageService.instance
+            .uploadUserImage(user.uid, UserImageProvider.instance.userImage);
+      }
+
       status = AuthStatus.Authenticated;
       SnackBarService.instance.showSnackBarSuccess("Welcome,${user!.email}");
       //Update Last Seen
-      //Navigate to Home Page
+      //Navigate to Home Pages
     } catch (e) {
+      debugPrint(e.toString());
       status = AuthStatus.Error;
       SnackBarService.instance.showSnackBarError("Error Authenticating");
     }
