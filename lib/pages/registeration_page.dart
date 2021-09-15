@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vartaa_messenger/providers/auth_provider.dart';
-import 'package:vartaa_messenger/providers/user_image_provider.dart';
+import 'package:vartaa_messenger/providers/user_avatar_provider.dart';
 import 'package:vartaa_messenger/services/navigation_service.dart';
 
 class RegistrationPage extends StatefulWidget {
@@ -21,7 +21,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
   late String _email;
   late String _password;
 
-  late UserImageProvider _userImageProvider;
+  late UserAvatarProvider _userAvatarProvider;
   late AuthProvider _authProvider;
 
   _RegistrationPageState() {
@@ -37,8 +37,8 @@ class _RegistrationPageState extends State<RegistrationPage> {
       backgroundColor: Theme.of(context).backgroundColor,
       body: MultiProvider(
         providers: [
-          ChangeNotifierProvider<UserImageProvider>.value(
-            value: UserImageProvider.instance,
+          ChangeNotifierProvider<UserAvatarProvider>.value(
+            value: UserAvatarProvider.instance,
           ),
           ChangeNotifierProvider<AuthProvider>.value(
             value: AuthProvider.instance,
@@ -121,13 +121,13 @@ class _RegistrationPageState extends State<RegistrationPage> {
   Widget _imageSelectorWidget() {
     return Builder(
       builder: (_context) {
-        _userImageProvider = Provider.of<UserImageProvider>(_context);
+        _userAvatarProvider = Provider.of<UserAvatarProvider>(_context);
         return Center(
           child: GestureDetector(
             onTap: () {
-              UserImageProvider.instance.getImageFromLibrary();
+              UserAvatarProvider.instance.getImageFromLibrary();
             },
-            child: _userImageProvider.status == UserImageStatus.Fetching
+            child: _userAvatarProvider.status == UserImageStatus.Fetching
                 ? CircularProgressIndicator()
                 : Container(
                     alignment: Alignment.center,
@@ -136,17 +136,10 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     decoration: BoxDecoration(
                       color: Colors.green,
                       borderRadius: BorderRadius.circular(500),
-                      image: _userImageProvider.status ==
-                              UserImageStatus.Fetched
-                          ? DecorationImage(
-                              image: FileImage(_userImageProvider.userImage),
+                      image:DecorationImage(
+                              image: _userAvatarProvider.userAvatar,
                               fit: BoxFit.cover,
                             )
-                          : DecorationImage(
-                              image: NetworkImage(
-                                  "https://cdn0.iconfinder.com/data/icons/occupation-002/64/programmer-programming-occupation-avatar-512.png"),
-                              fit: BoxFit.cover,
-                            ),
                     ),
                   ),
           ),

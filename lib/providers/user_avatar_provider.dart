@@ -10,17 +10,22 @@ enum UserImageStatus {
   Error,
 }
 
-class UserImageProvider extends ChangeNotifier {
+class UserAvatarProvider extends ChangeNotifier {
+
+  ImageProvider userAvatar=NetworkImage(
+      "https://cdn0.iconfinder.com/data/icons/occupation-002/64/programmer-programming-occupation-avatar-512.png");
+
   late File userImage;
 
   UserImageStatus? status;
 
-  static UserImageProvider instance = UserImageProvider();
+  static UserAvatarProvider instance = UserAvatarProvider();
 
   void getImageFromLibrary() async {
     status = UserImageStatus.Fetching;
     try {
-      userImage = await MediaService.instance.getImageFromLibrary();
+      userImage=await MediaService.instance.getImageFromLibrary();
+      userAvatar = FileImage(userImage);
       status = UserImageStatus.Fetched;
       SnackBarService.instance
           .showSnackBarSuccess("Fetched Image Successfully");
